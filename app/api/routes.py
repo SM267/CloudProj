@@ -37,7 +37,11 @@ async def meta() -> dict[str, str]:
     """Return non-secret service metadata."""
 
     settings = get_settings()
-    return {"name": settings.app_name, "version": settings.app_version, "environment": settings.environment}
+    return {
+        "name": settings.app_name,
+        "version": settings.app_version,
+        "environment": settings.environment,
+    }
 
 
 @router.post("/api/v1/factory/plan")

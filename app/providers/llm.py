@@ -101,7 +101,11 @@ class OpenAIProvider(_HTTPProvider):
         result = await self._request_json(
             "POST",
             f"{self.settings.openai_base_url.rstrip('/')}/chat/completions",
-            headers={"Authorization": f"Bearer {self.settings.openai_api_key.get_secret_value()}"},
+            headers={
+                "Authorization": (
+                    f"Bearer {self.settings.openai_api_key.get_secret_value()}"
+                )
+            },
             json=payload,
         )
         try:
@@ -169,7 +173,9 @@ class OllamaProvider(_HTTPProvider):
             raise LLMProviderError("Unexpected Ollama response shape") from exc
 
 
-def build_llm_provider(provider: str | None = None, settings: Settings | None = None) -> LLMProvider:
+def build_llm_provider(
+    provider: str | None = None, settings: Settings | None = None
+) -> LLMProvider:
     """Build the configured adapter without leaking provider logic into services."""
 
     settings = settings or get_settings()

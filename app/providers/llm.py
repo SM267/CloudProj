@@ -48,7 +48,7 @@ class LLMProvider(ABC):
 
 
 class StubLLMProvider(LLMProvider):
-    """Deterministic implementation used by default for tests and local development."""
+    """Deterministic implementation used for tests and local development."""
 
     name = "stub"
 
@@ -119,7 +119,10 @@ class GeminiProvider(_HTTPProvider):
         if not self.settings.gemini_api_key:
             raise LLMProviderError("CLOUDPROJ_GEMINI_API_KEY is not configured")
         contents = [
-            {"role": "model" if message.role == "assistant" else "user", "parts": [{"text": message.content}]}
+            {
+                "role": "model" if message.role == "assistant" else "user",
+                "parts": [{"text": message.content}],
+            }
             for message in messages
             if message.role != "system"
         ]
@@ -167,18 +170,19 @@ class OllamaProvider(_HTTPProvider):
 
 
 def build_llm_provider(provider: str | None = None, settings: Settings | None = None) -> LLMProvider:
-    """Build the configured LLM adapter without leaking provider logic into services."""
+    """Build the configured adapter without leaking provider logic into services."""
 
     settings = settings or get_settings()
     selected = (provider or settings.default_llm_provider).strip().lower()
-    providers: dict[str, type[LLMProvider]] = {
-        "stub": StubLLMProvider,
+    if selected == "stub":
+        return StubLLMProvider()
+    providers: dict[str, type[_HTTPProvider]] = {
         "openai": OpenAIProvider,
         "gemini": GeminiProvider,
         "ollama": OllamaProvider,
     }
     try:
-        return providers[selected](settings)  # type: ignore[arg-type]
+        return providers[selected](settings)
     except KeyError as exc:
-        supported = ", ".join(sorted(providers))
+        supported = ", ".join(["stub", *sorted(providers)])
         raise ValueError(f"Unsupported LLM provider '{selected}'. Choose: {supported}") from exc

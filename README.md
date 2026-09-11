@@ -19,7 +19,7 @@ The repository currently provides a production-minded **planning foundation**:
 - Provider selection through configuration or an API request.
 - Non-destructive Docker deployment planning contract.
 - Ruff + Pytest + GitHub Actions CI.
-- Architecture, security, contribution, evaluation, and ADR documentation.
+- Architecture, provider setup, security, contribution, evaluation, and ADR documentation.
 
 The generated-code and cloud-deployment stages are intentionally marked as roadmap work; the project does **not** claim those capabilities are implemented yet.
 
@@ -114,6 +114,8 @@ Content-Type: application/json
 
 Remote adapters use a shared timeout/retry policy. Credentials are loaded through environment-backed settings and are never returned by the API.
 
+See [`docs/providers.md`](docs/providers.md) for setup instructions.
+
 ## Technology Stack
 
 - **Backend:** Python 3.11+, FastAPI, Pydantic, Pydantic Settings
@@ -181,7 +183,7 @@ CloudProj/
 │   ├── services/         # Application orchestration
 │   └── config.py         # Environment-backed settings
 ├── tests/                # Unit and API integration tests
-├── docs/                 # Architecture, ADRs, evaluation, roadmap
+├── docs/                 # Architecture, ADRs, evaluation, providers, roadmap
 ├── .github/workflows/    # CI
 ├── Dockerfile
 ├── docker-compose.yml
@@ -227,6 +229,7 @@ React/TypeScript dashboard for projects, pipeline state, generated artifacts, te
 ## Documentation
 
 - `docs/architecture.md` — system boundaries and data flow
+- `docs/providers.md` — LLM provider configuration
 - `docs/adr/0001-provider-neutral-architecture.md` — architectural decision record
 - `docs/evaluation.md` — evaluation methodology and quality gates
 - `docs/roadmap.md` — implementation roadmap
